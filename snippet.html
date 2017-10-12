@@ -1,0 +1,29 @@
+    <script>
+        (function() {
+          var rcs = document.createElement("script");
+          rcs.src = "https://ringcentral.github.io/ringcentral-widget-demo/adapter.js";
+          var rcs0 = document.getElementsByTagName("script")[0];
+          rcs0.parentNode.insertBefore(rcs, rcs0);
+          if (window.RCAdapter) {
+            window.RCAdapter.setMinimized(false);
+          }
+        })();
+
+        (function () {
+        window.addEventListener('message', function(e) {
+          const data = e.data;
+          if (data) {
+            switch (data.type) {
+              case 'rc-call-ring-notify':
+                var id = number2id(data.call.from, number2user);
+                if (id) {
+                  window.location.assign("?id="+id);
+                }
+                break;
+              default:
+                break;
+            }
+          }
+        })
+    })();
+    </script>
