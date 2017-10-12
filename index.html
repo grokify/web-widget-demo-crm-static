@@ -210,6 +210,29 @@
     <script src="./assets/libphonenumber-v0.9.4/libphonenumber.js"></script>
     <script src="./data/characters.js"></script>
     <script>
+        function addUserToContactTable(tableSelector, char) {
+            console.log(char.character.displayName);
+            var numberE164 = char.character.phoneNumbers[0].value;
+            var numberNat = phoneUtils.formatNational(numberE164, "us");
+            jQuery(tableSelector).find('tbody')
+                .append(jQuery('<tr>')
+                    .append(jQuery('<td>')
+                        .text(char.id)
+                    )
+                    .append(jQuery('<td><a href="?id='+charNum+'">'+char.character.displayName+'</a>')
+                    )
+                    .append(jQuery('<td>'))
+                    .append('<td><a href="tel:'+numberE164+'">'+numberNat+'</a></td>')
+                );
+        }
+        function deleteRow(tableID) {
+            var table = document.getElementById(tableID);
+            var rowCount = table.rows.length;
+            if (rowCount>0) {
+                table.deleteRow(rowCount -1);
+            }
+        }
+
         var id = qs.paramsMap['id'];
         var singleChar = {};
         for (var i = 0; i < characters.length; i++) {
@@ -224,6 +247,8 @@
                     singleChar = char;
                 }
             }
+            addUserToContactTable(table, char);
+            /*
             console.log(char.character.displayName);
             var numberE164 = char.character.phoneNumbers[0].value;
             var numberNat = phoneUtils.formatNational(numberE164, "us");
@@ -236,7 +261,7 @@
                     )
                     .append(jQuery('<td>'))
                     .append('<td><a href="tel:'+numberE164+'">'+numberNat+'</a></td>')
-                );
+                );*/
         }
 
         if (!id) {
@@ -245,11 +270,11 @@
           loadSingleUser(id, id2user);
         }
         function loadSingleUser(id, id2user) {
-          var contact = id2user[id];
-          if (contact==null) {
-            return;
-          }
-          var dn = contact.character.displayName;
+            var contact = id2user[id];
+            if (contact==null) {
+              return;
+            }
+            var dn = contact.character.displayName;
             jQuery('#singlecontactname').html('<a href="./index.html">Contacts</a> - '+dn);
             var cases = allCases[contact.id];
             if (cases!=null && cases.length>0) {
@@ -269,6 +294,8 @@
                 );
                 }
             }
+            deleteRow('singlecontacttable');
+            addUserToContactTable('#singlecontacttable', contact);
             jQuery('#contactslist').hide();
             jQuery('#singlecontact').show();
         }
