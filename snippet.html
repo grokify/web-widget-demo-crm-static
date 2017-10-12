@@ -17,7 +17,10 @@
               case 'rc-call-ring-notify':
                 var id = number2id(data.call.from, number2user);
                 if (id) {
-                  window.location.assign("?id="+id);
+                  var contact = id2user[id];
+                  window.title = contact.character.displayName;
+                  window.history.pushState("", contact.character.displayName, "?id="+id);
+                  loadSingleUser(id, id2user);
                 }
                 break;
               default:

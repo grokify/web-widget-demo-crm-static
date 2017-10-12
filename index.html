@@ -240,11 +240,18 @@
         }
 
         if (!id) {
-            jQuery('#contactslist').show();
+          jQuery('#contactslist').show();
         } else {
-            var dn = singleChar.character.displayName;
+          loadSingleUser(id, id2user);
+        }
+        function loadSingleUser(id, id2user) {
+          var contact = id2user[id];
+          if (contact==null) {
+            return;
+          }
+          var dn = contact.character.displayName;
             jQuery('#singlecontactname').html('<a href="./index.html">Contacts</a> - '+dn);
-            var cases = allCases[singleChar.id];
+            var cases = allCases[contact.id];
             if (cases!=null && cases.length>0) {
                 for (var j=0;j<cases.length;j++) {
                     var c = cases[j];
@@ -262,39 +269,44 @@
                 );
                 }
             }
+            jQuery('#contactslist').hide();
             jQuery('#singlecontact').show();
         }
     </script>
 
-    <script>
-        (function() {
-          var rcs = document.createElement("script");
-          rcs.src = "https://ringcentral.github.io/ringcentral-widget-demo/adapter.js";
-          var rcs0 = document.getElementsByTagName("script")[0];
-          rcs0.parentNode.insertBefore(rcs, rcs0);
-          if (window.RCAdapter) {
-            window.RCAdapter.setMinimized(false);
-          }
-        })();
-
-        (function () {
-        window.addEventListener('message', function(e) {
-          const data = e.data;
-          if (data) {
-            switch (data.type) {
-              case 'rc-call-ring-notify':
-                var id = number2id(data.call.from, number2user);
-                if (id) {
-                  window.location.assign("?id="+id);
-                }
-                break;
-              default:
-                break;
-            }
-          }
-        })
+<script>
+    (function() {
+      var rcs = document.createElement("script");
+      rcs.src = "https://ringcentral.github.io/ringcentral-widget-demo/adapter.js";
+      var rcs0 = document.getElementsByTagName("script")[0];
+      rcs0.parentNode.insertBefore(rcs, rcs0);
+      if (window.RCAdapter) {
+        window.RCAdapter.setMinimized(false);
+      }
     })();
-    </script>
+
+    (function () {
+    window.addEventListener('message', function(e) {
+      const data = e.data;
+      if (data) {
+        switch (data.type) {
+          case 'rc-call-ring-notify':
+            var id = number2id(data.call.from, number2user);
+            if (id) {
+              var contact = id2user[id];
+              window.title = contact.character.displayName;
+              window.history.pushState("", contact.character.displayName, "?id="+id);
+              loadSingleUser(id, id2user);
+            }
+            break;
+          default:
+            break;
+        }
+      }
+    })
+})();
+</script>
+    <!--input type="button" onclick='document.title="ABC";window.history.pushState("", "", "?id="+11);'-->
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
