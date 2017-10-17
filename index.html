@@ -219,7 +219,7 @@
                     .append(jQuery('<td>')
                         .text(char.id)
                     )
-                    .append(jQuery('<td><a href="?id='+charNum+'">'+char.character.displayName+'</a>')
+                    .append(jQuery('<td><a href="?id='+char.id+'">'+char.character.displayName+'</a>')
                     )
                     .append(jQuery('<td>'))
                     .append('<td><a href="tel:'+numberE164+'">'+numberNat+'</a></td>')
@@ -301,38 +301,42 @@
         }
     </script>
 
-<script>
-    (function() {
-      var rcs = document.createElement("script");
-      rcs.src = "https://ringcentral.github.io/ringcentral-widget-demo/adapter.js";
-      var rcs0 = document.getElementsByTagName("script")[0];
-      rcs0.parentNode.insertBefore(rcs, rcs0);
-      if (window.RCAdapter) {
-        window.RCAdapter.setMinimized(false);
-      }
-    })();
+    <!-- BEGIN WIDGET -->
 
-    (function () {
-    window.addEventListener('message', function(e) {
-      const data = e.data;
-      if (data) {
-        switch (data.type) {
-          case 'rc-call-ring-notify':
-            var id = number2id(data.call.from, number2user);
-            if (id) {
-              var contact = id2user[id];
-              window.title = contact.character.displayName;
-              window.history.pushState("", contact.character.displayName, "?id="+id);
-              loadSingleUser(id, id2user);
+    <script>
+        (function() {
+          var rcs = document.createElement("script");
+          rcs.src = "https://ringcentral.github.io/ringcentral-widget-demo/adapter.js";
+          var rcs0 = document.getElementsByTagName("script")[0];
+          rcs0.parentNode.insertBefore(rcs, rcs0);
+          if (window.RCAdapter) {
+            window.RCAdapter.setMinimized(false);
+          }
+        })();
+    
+        (function () {
+        window.addEventListener('message', function(e) {
+          const data = e.data;
+          if (data) {
+            switch (data.type) {
+              case 'rc-call-ring-notify':
+                var id = number2id(data.call.from, number2user);
+                if (id) {
+                  var contact = id2user[id];
+                  window.title = contact.character.displayName;
+                  window.history.pushState("", contact.character.displayName, "?id="+id);
+                  loadSingleUser(id, id2user);
+                }
+                break;
+              default:
+                break;
             }
-            break;
-          default:
-            break;
-        }
-      }
-    })
-})();
-</script>
+          }
+        })
+    })();
+    </script>
+    <!-- END WIDGET -->
+
     <!--input type="button" onclick='document.title="ABC";window.history.pushState("", "", "?id="+11);'-->
 
     <!-- Bootstrap core JavaScript
